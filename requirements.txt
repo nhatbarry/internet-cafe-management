@@ -1,0 +1,9 @@
+# Internet Cafe Management - Server/Admin
+# Python 3.10+
+
+# GUI Framework
+PyQt5==5.15.11
+
+# Database
+pymongo==4.15.5
+dnspython==2.8.0

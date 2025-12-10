@@ -1,36 +1,37 @@
 import sys
-import platform
-from PySide6 import QtCore, QtGui, QtWidgets
-from PySide6.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect, QSize, QTime, QUrl, Qt, QEvent)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient)
-from PySide6.QtWidgets import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFrame, QVBoxLayout, QLabel, QPushButton
 
-# GUI FILE - Import module giao diện
-from app_modules import * \
-    
+app = QApplication(sys.argv)
+
+from ui.files_rc import qInitResources
+qInitResources()
+
+# GUI FILE
+from ui.app_modules import *
+from controllers.controllers import MainController
+
+from database import Database 
+
 class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        UIFunctions.removeTitleBar(True)
+        self.db = Database()
 
+        UIFunctions.removeTitleBar(True)
         self.setWindowTitle('Cyber Cafe Manager - Admin')
         UIFunctions.labelTitle(self, 'Cyber Cafe Manager - Admin')
-        UIFunctions.labelDescription(self, 'Trạng thái: Server Online')
+        UIFunctions.labelDescription(self, 'Kết nối: MongoDB Localhost')
 
         startSize = QSize(1200, 800)
         self.resize(startSize)
         self.setMinimumSize(startSize)
 
-        self.ui.btn_toggle_menu.clicked.connect(lambda: UIFunctions.toggleMenu(self, 220, True))
-
-        self.ui.btn_open_file.clicked.connect(self.Button)
-        self.ui.btn_save.clicked.connect(self.Button)
-        self.ui.btn_new.clicked.connect(self.Button)
-        self.ui.btn_new_user.clicked.connect(self.Button)
-        self.ui.btn_settings.clicked.connect(self.Button)
+        self.controller = MainController(self)
 
         self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
         UIFunctions.selectStandardMenu(self, "btn_dashboard") 
@@ -38,9 +39,9 @@ class MainWindow(QMainWindow):
         def moveWindow(event):
             if UIFunctions.returStatus() == 1:
                 UIFunctions.maximize_restore(self)
-            if event.buttons() == Qt.MouseButton.LeftButton:
-                self.move(self.pos() + event.globalPosition().toPoint() - self.dragPos)
-                self.dragPos = event.globalPosition().toPoint()
+            if event.buttons() == Qt.LeftButton:
+                self.move(self.pos() + event.globalPos() - self.dragPos)
+                self.dragPos = event.globalPos()
                 event.accept()
 
         self.ui.frame_label_top_btns.mouseMoveEvent = moveWindow
@@ -53,14 +54,10 @@ class MainWindow(QMainWindow):
 
     def populate_machines(self):
         if hasattr(self.ui, 'gridLayout_machines'):
-            machines = [
-                {"name": "Máy 01", "status": "Online", "user": "1"},
-                {"name": "Máy 02", "status": "Offline", "user": "2"},
-                {"name": "Máy 03", "status": "Offline", "user": "3"},
-                {"name": "Máy 04", "status": "Online", "user": "4"},
-                {"name": "Máy 05", "status": "Maintenance", "user": "5"},
-                {"name": "Máy VIP 1", "status": "Online", "user": "tien an cut"},
-            ]
+            for i in reversed(range(self.ui.gridLayout_machines.count())): 
+                self.ui.gridLayout_machines.itemAt(i).widget().setParent(None)
+
+            machines = self.db.get_all_computers() 
 
             row = 0
             col = 0
@@ -68,24 +65,26 @@ class MainWindow(QMainWindow):
                 card = self.create_machine_card(machine)
                 self.ui.gridLayout_machines.addWidget(card, row, col)
                 col += 1
-                if col > 2:
+                if col > 2: 
                     col = 0
                     row += 1
         else:
-            print("gridLayout_machines")
+            print("Chưa có gridLayout_machines trong UI")
 
     def create_machine_card(self, data):
         frame = QFrame()
-        frame.setMinimumSize(250, 150)
+        frame.setMinimumSize(250, 160) 
         
-        bg_color = "rgb(44, 49, 60)" 
-        status_color = "gray"
-        if data['status'] == 'Online':
+        is_active = data.get('is_active', False) 
+        
+        if is_active:
             bg_color = "rgb(20, 60, 40)" 
-            status_color = "#00FF00" 
-        elif data['status'] == 'Maintenance':
-            bg_color = "rgb(60, 40, 20)"
-            status_color = "orange"
+            status_text = "Online"
+            status_color = "#00FF00"  
+        else:
+            bg_color = "rgb(44, 49, 60)"  
+            status_text = "Offline"
+            status_color = "gray"      
 
         frame.setStyleSheet(f"""
             QFrame {{
@@ -100,20 +99,27 @@ class MainWindow(QMainWindow):
         
         layout = QVBoxLayout(frame)
         
-        lbl_name = QLabel(f"{data['name']}")
+        machine_name = data.get('computer_name', 'Unknown PC')
+        lbl_name = QLabel(f"🖥️ {machine_name}")
         lbl_name.setStyleSheet("font-size: 18px; font-weight: bold; color: white; border: none; background: transparent;")
         layout.addWidget(lbl_name)
         
-        lbl_status = QLabel(f"Status: {data['status']}")
+        ip_addr = data.get('ip_address', '0.0.0.0')
+        lbl_ip = QLabel(f"IP: {ip_addr}")
+        lbl_ip.setStyleSheet("font-size: 11px; color: #aaa; border: none; background: transparent;")
+        layout.addWidget(lbl_ip)
+
+        lbl_status = QLabel(f"Status: {status_text}")
         lbl_status.setStyleSheet(f"color: {status_color}; font-weight: bold; border: none; background: transparent;")
         layout.addWidget(lbl_status)
         
-        if data['user']:
-            lbl_user = QLabel(f"User: {data['user']}")
+        user_name = data.get('user') 
+        if user_name:
+            lbl_user = QLabel(f"User: {user_name}")
             lbl_user.setStyleSheet("color: #ccc; border: none; background: transparent;")
             layout.addWidget(lbl_user)
         else:
-            layout.addStretch()
+            layout.addStretch() 
 
         btn = QPushButton("Chi tiết")
         btn.setStyleSheet("""
@@ -130,44 +136,12 @@ class MainWindow(QMainWindow):
         
         return frame
 
-    def Button(self):
-        btnWidget = self.sender()
-        btnName = btnWidget.objectName()
-
-        UIFunctions.resetStyle(self, btnName)
-        btnWidget.setStyleSheet(UIFunctions.selectMenu(btnWidget.styleSheet()))
-
-        if btnName == "btn_dashboard":
-            self.ui.stackedWidget.setCurrentWidget(self.ui.page_home)
-            UIFunctions.labelPage(self, "Tổng quan")
-        
-        elif btnName == "btn_machines":
-            self.ui.stackedWidget.setCurrentWidget(self.ui.page_home) 
-            UIFunctions.labelPage(self, "Quản lý Máy trạm")
-
-        elif btnName == "btn_services":
-            UIFunctions.labelPage(self, "Dịch vụ & Đồ ăn")
-            
-        elif btnName == "btn_members":
-            UIFunctions.labelPage(self, "Quản lý Hội viên")
-
-        elif btnName == "btn_settings":
-            if hasattr(self.ui, 'page_settings'):
-                self.ui.stackedWidget.setCurrentWidget(self.ui.page_settings)
-            UIFunctions.labelPage(self, "Cài đặt hệ thống")
-
-
     def mousePressEvent(self, event):
-        self.dragPos = event.globalPosition().toPoint()
+        self.dragPos = event.globalPos()
 
     def resizeEvent(self, event):
-        self.resizeFunction()
         return super(MainWindow, self).resizeEvent(event)
-    
-    def resizeFunction(self):
-        pass
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
     window = MainWindow()
-    sys.exit(app.exec())
+    sys.exit(app.exec_())

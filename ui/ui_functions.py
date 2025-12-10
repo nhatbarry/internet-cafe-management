@@ -1,6 +1,5 @@
 ################################################################################
 ##
-## BY: WANDERSON M.PIMENTA
 ## PROJECT MADE WITH: Qt Designer and PySide2
 ## V: 1.0.0
 ##
@@ -15,7 +14,11 @@
 ################################################################################
 
 ## ==> GUI FILE
-from main import *
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
+from PyQt5.QtWidgets import QMainWindow, QSizeGrip, QPushButton, QGraphicsDropShadowEffect, QSizePolicy
+from PyQt5.QtGui import QColor, QFont
+from ui.ui_styles import Style
 
 ## ==> GLOBALS
 GLOBAL_STATE = 0
@@ -24,7 +27,7 @@ GLOBAL_TITLE_BAR = True
 ## ==> COUT INITIAL MENU
 count = 1
 
-class UIFunctions(MainWindow):
+class UIFunctions:
 
     ## ==> GLOBALS
     GLOBAL_STATE = 0

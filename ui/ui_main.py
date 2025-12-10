@@ -4,18 +4,21 @@
 ## Form generated from reading UI file 'gui_base_old.ui'
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+from PyQt5.QtCore import (QCoreApplication, QDate, QDateTime,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+from PyQt5.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
+from PyQt5.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QLabel, QMainWindow, QPlainTextEdit, QPushButton,
     QSizePolicy, QStackedWidget, QTextBrowser, QVBoxLayout,
-    QWidget, QScrollArea, QGridLayout)
-import files_rc
+    QWidget, QScrollArea, QGridLayout, QTableWidget, QTableWidgetItem,
+    QHeaderView, QAbstractItemView, QLineEdit, QComboBox, QSpinBox,
+    QDoubleSpinBox, QCheckBox, QRadioButton, QDateEdit, QTimeEdit,
+    QDateTimeEdit, QTextEdit, QFormLayout, QSpacerItem)
+import ui.files_rc as files_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -25,7 +28,7 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QSize(1000, 720))
         
         font = QFont()
-        font.setFamilies([u"Segoe UI"])
+        font.setFamily(u"Segoe UI")
         font.setPointSize(10)
         MainWindow.setFont(font)
         
@@ -57,6 +60,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         
+        # --- TOP BAR ---
         self.frame_top = QFrame(self.frame_main)
         self.frame_top.setObjectName(u"frame_top")
         self.frame_top.setMaximumSize(QSize(16777215, 60))
@@ -83,7 +87,7 @@ class Ui_MainWindow(object):
         
         self.btn_toggle_menu = QPushButton(self.frame_toggle)
         self.btn_toggle_menu.setObjectName(u"btn_toggle_menu")
-        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_toggle_menu.sizePolicy().hasHeightForWidth())
@@ -153,7 +157,7 @@ class Ui_MainWindow(object):
         self.label_title_bar_top = QLabel(self.frame_label_top_btns)
         self.label_title_bar_top.setObjectName(u"label_title_bar_top")
         font1 = QFont()
-        font1.setFamilies([u"Segoe UI"])
+        font1.setFamily(u"Segoe UI")
         font1.setPointSize(10)
         font1.setBold(True)
         self.label_title_bar_top.setFont(font1)
@@ -177,7 +181,7 @@ class Ui_MainWindow(object):
         
         self.btn_minimize = QPushButton(self.frame_btns_right)
         self.btn_minimize.setObjectName(u"btn_minimize")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Expanding)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.btn_minimize.sizePolicy().hasHeightForWidth())
@@ -193,7 +197,7 @@ class Ui_MainWindow(object):
             "      background-color: rgb(85, 170, 255);\n"
             "}")
         icon = QIcon()
-        icon.addFile(u":/16x16/icons/16x16/cil-window-minimize.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon.addFile(u":/16x16/icons/16x16/cil-window-minimize.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_minimize.setIcon(icon)
         self.horizontalLayout_5.addWidget(self.btn_minimize)
 
@@ -212,7 +216,7 @@ class Ui_MainWindow(object):
             "      background-color: rgb(85, 170, 255);\n"
             "}")
         icon1 = QIcon()
-        icon1.addFile(u":/16x16/icons/16x16/cil-window-maximize.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1.addFile(u":/16x16/icons/16x16/cil-window-maximize.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_maximize_restore.setIcon(icon1)
         self.horizontalLayout_5.addWidget(self.btn_maximize_restore)
 
@@ -231,7 +235,7 @@ class Ui_MainWindow(object):
             "      background-color: rgb(200, 40, 40);\n"
             "}")
         icon2 = QIcon()
-        icon2.addFile(u":/16x16/icons/16x16/cil-x.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon2.addFile(u":/16x16/icons/16x16/cil-x.png", QSize(), QIcon.Normal, QIcon.Off)
         self.btn_close.setIcon(icon2)
         self.horizontalLayout_5.addWidget(self.btn_close)
         self.horizontalLayout_4.addWidget(self.frame_btns_right)
@@ -252,7 +256,7 @@ class Ui_MainWindow(object):
         self.label_top_info_1 = QLabel(self.frame_top_info)
         self.label_top_info_1.setObjectName(u"label_top_info_1")
         font2 = QFont()
-        font2.setFamilies([u"Segoe UI"])
+        font2.setFamily(u"Segoe UI")
         self.label_top_info_1.setFont(font2)
         self.label_top_info_1.setStyleSheet(u"color: rgb(98, 103, 111);")
         self.horizontalLayout_8.addWidget(self.label_top_info_1)
@@ -262,7 +266,7 @@ class Ui_MainWindow(object):
         self.label_top_info_2.setMinimumSize(QSize(0, 0))
         self.label_top_info_2.setMaximumSize(QSize(250, 16777215))
         font3 = QFont()
-        font3.setFamilies([u"Segoe UI"])
+        font3.setFamily(u"Segoe UI")
         font3.setBold(True)
         self.label_top_info_2.setFont(font3)
         self.label_top_info_2.setStyleSheet(u"color: rgb(98, 103, 111);")
@@ -287,7 +291,7 @@ class Ui_MainWindow(object):
         # --- LEFT MENU (SIDEBAR) ---
         self.frame_left_menu = QFrame(self.frame_center)
         self.frame_left_menu.setObjectName(u"frame_left_menu")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.frame_left_menu.sizePolicy().hasHeightForWidth())
@@ -315,7 +319,7 @@ class Ui_MainWindow(object):
         
         self.btn_open_file = QPushButton(self.frame_menus)
         self.btn_open_file.setObjectName(u"btn_dashboard") # Renamed for clarity
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.btn_open_file.sizePolicy().hasHeightForWidth())
@@ -437,7 +441,7 @@ class Ui_MainWindow(object):
         # User Avatar
         self.label_user_icon = QLabel(self.frame_extra_menus)
         self.label_user_icon.setObjectName(u"label_user_icon")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Maximum)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Maximum)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.label_user_icon.sizePolicy().hasHeightForWidth())
@@ -445,7 +449,7 @@ class Ui_MainWindow(object):
         self.label_user_icon.setMinimumSize(QSize(60, 60))
         self.label_user_icon.setMaximumSize(QSize(60, 60))
         font4 = QFont()
-        font4.setFamilies([u"Segoe UI"])
+        font4.setFamily(u"Segoe UI")
         font4.setPointSize(12)
         self.label_user_icon.setFont(font4)
         self.label_user_icon.setStyleSheet(u"QLabel {\n"
@@ -484,6 +488,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.frame_extra_menus, 0, Qt.AlignBottom)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
 
+        # --- RIGHT CONTENT ---
         self.frame_content_right = QFrame(self.frame_center)
         self.frame_content_right.setObjectName(u"frame_content_right")
         self.frame_content_right.setStyleSheet(u"background-color: rgb(44, 49, 60);")
@@ -510,6 +515,7 @@ class Ui_MainWindow(object):
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setStyleSheet(u"background: transparent;")
         
+        # 1. Page Home (Dashboard)
         self.page_home = QWidget()
         self.page_home.setObjectName(u"page_home")
         self.verticalLayout_10 = QVBoxLayout(self.page_home)
@@ -518,33 +524,240 @@ class Ui_MainWindow(object):
         self.label_dashboard_title = QLabel(self.page_home)
         self.label_dashboard_title.setText("DANH SÁCH MÁY TRẠM")
         font_title = QFont()
-        font_title.setFamilies([u"Segoe UI"])
+        font_title.setFamily(u"Segoe UI")
         font_title.setPointSize(20)
         font_title.setBold(True)
         self.label_dashboard_title.setFont(font_title)
         self.label_dashboard_title.setStyleSheet("color: white; margin-bottom: 10px;")
         self.verticalLayout_10.addWidget(self.label_dashboard_title)
 
-        # Scroll Area để chứa nhiều máy
         self.scrollArea = QScrollArea(self.page_home)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setStyleSheet("border: none; background: transparent;")
         
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 800, 600))
-        self.gridLayout_machines = QGridLayout(self.scrollAreaWidgetContents) # Grid này để code logic add Card vào
+        self.gridLayout_machines = QGridLayout(self.scrollAreaWidgetContents) 
         self.gridLayout_machines.setObjectName(u"gridLayout_machines")
         self.gridLayout_machines.setSpacing(15)
         
-        # (Để trống Grid này, Logic code sẽ fill card vào sau)
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
         self.verticalLayout_10.addWidget(self.scrollArea)
         self.stackedWidget.addWidget(self.page_home)
 
-        # Page 2: Settings (Cài đặt)
+        # --- 2. Page Machines (Quản lý Máy trạm) - ĐÃ CẬP NHẬT ---
+        self.page_machines = QWidget()
+        self.page_machines.setObjectName(u"page_machines")
+        self.layout_machines = QVBoxLayout(self.page_machines)
+
+        # 2.1 Bảng danh sách Máy
+        self.table_machines = QTableWidget()
+        self.table_machines.setObjectName(u"table_machines")
+        self.table_machines.setColumnCount(5)
+        self.table_machines.setHorizontalHeaderLabels(["ID", "Tên Máy", "Địa chỉ IP", "Trạng thái", "Người dùng"])
+        self.table_machines.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_machines.setStyleSheet("""
+            QTableWidget {
+                background-color: rgb(39, 44, 54);
+                color: white;
+                gridline-color: rgb(44, 49, 60);
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: rgb(33, 37, 43);
+                color: white;
+                border: 1px solid rgb(44, 49, 60);
+                padding: 5px;
+            }
+            QTableWidget::item:selected {
+                background-color: rgb(85, 170, 255);
+            }
+        """)
+        self.layout_machines.addWidget(self.table_machines)
+
+        # 2.2 Khu vực nhập liệu
+        self.frame_input_machine = QFrame()
+        self.frame_input_machine.setStyleSheet("background-color: rgb(33, 37, 43); border-radius: 5px;")
+        self.layout_input_machine = QGridLayout(self.frame_input_machine)
+
+        # Các ô nhập liệu
+        self.txt_comp_id = QLineEdit()
+        self.txt_comp_id.setPlaceholderText("ID (Tự động)")
+        self.txt_comp_id.setEnabled(False)
+        self.txt_comp_id.setStyleSheet("background-color: rgb(27, 29, 35); color: gray; padding: 5px;")
+
+        self.txt_comp_name = QLineEdit()
+        self.txt_comp_name.setPlaceholderText("Tên máy (VD: PC-01)")
+        self.txt_comp_name.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.txt_comp_ip = QLineEdit()
+        self.txt_comp_ip.setPlaceholderText("Địa chỉ IP (VD: 192.168.1.10)")
+        self.txt_comp_ip.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.chk_comp_active = QCheckBox("Đang hoạt động (Active)")
+        self.chk_comp_active.setStyleSheet("color: white;")
+        self.chk_comp_active.setChecked(True) # Mặc định là active
+
+        # Add vào Layout Grid
+        self.layout_input_machine.addWidget(QLabel("ID:", styleSheet="color: white"), 0, 0)
+        self.layout_input_machine.addWidget(self.txt_comp_id, 0, 1)
+        
+        self.layout_input_machine.addWidget(QLabel("Tên Máy:", styleSheet="color: white"), 0, 2)
+        self.layout_input_machine.addWidget(self.txt_comp_name, 0, 3)
+
+        self.layout_input_machine.addWidget(QLabel("IP:", styleSheet="color: white"), 1, 0)
+        self.layout_input_machine.addWidget(self.txt_comp_ip, 1, 1)
+
+        self.layout_input_machine.addWidget(self.chk_comp_active, 1, 3)
+
+        self.layout_machines.addWidget(self.frame_input_machine)
+
+        # 2.3 Các nút chức năng
+        self.frame_btn_machine = QFrame()
+        self.layout_btn_machine = QHBoxLayout(self.frame_btn_machine)
+        
+        btn_style = """
+            QPushButton { background-color: rgb(52, 59, 72); color: white; padding: 10px; border-radius: 5px; }
+            QPushButton:hover { background-color: rgb(60, 69, 84); }
+        """
+        self.btn_add_machine = QPushButton("Thêm Máy")
+        self.btn_add_machine.setStyleSheet(btn_style)
+        
+        self.btn_edit_machine = QPushButton("Cập Nhật")
+        self.btn_edit_machine.setStyleSheet(btn_style)
+        
+        self.btn_delete_machine = QPushButton("Xóa Máy")
+        self.btn_delete_machine.setStyleSheet("QPushButton { background-color: rgb(200, 50, 50); color: white; padding: 10px; border-radius: 5px; }")
+        
+        self.btn_clear_machine = QPushButton("Làm Mới")
+        self.btn_clear_machine.setStyleSheet(btn_style)
+
+        self.layout_btn_machine.addWidget(self.btn_add_machine)
+        self.layout_btn_machine.addWidget(self.btn_edit_machine)
+        self.layout_btn_machine.addWidget(self.btn_delete_machine)
+        self.layout_btn_machine.addWidget(self.btn_clear_machine)
+
+        self.layout_machines.addWidget(self.frame_btn_machine)
+        
+        self.stackedWidget.addWidget(self.page_machines)
+
+        # 3. Page Services (Dịch vụ)
+        self.page_services = QWidget()
+        self.page_services.setObjectName(u"page_services")
+        layout_s = QVBoxLayout(self.page_services)
+        label_s = QLabel("MÀN HÌNH DỊCH VỤ (F&B)", self.page_services)
+        label_s.setAlignment(Qt.AlignCenter)
+        label_s.setStyleSheet("color: white; font-size: 24pt;")
+        layout_s.addWidget(label_s)
+        self.stackedWidget.addWidget(self.page_services)
+
+        # 4. Page Members (Hội viên)
+        # --- 4. Page Members (Hội viên) - ĐÃ CẬP NHẬT ---
+        self.page_members = QWidget()
+        self.page_members.setObjectName(u"page_members")
+        self.layout_members = QVBoxLayout(self.page_members)
+        
+        # 4.1 Bảng danh sách User
+        self.table_users = QTableWidget()
+        self.table_users.setObjectName(u"table_users")
+        self.table_users.setColumnCount(5)
+        self.table_users.setHorizontalHeaderLabels(["ID", "Tài khoản", "Mật khẩu", "Số dư", "VIP"])
+        self.table_users.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_users.setStyleSheet("""
+            QTableWidget {
+                background-color: rgb(39, 44, 54);
+                color: white;
+                gridline-color: rgb(44, 49, 60);
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: rgb(33, 37, 43);
+                color: white;
+                border: 1px solid rgb(44, 49, 60);
+                padding: 5px;
+            }
+            QTableWidget::item:selected {
+                background-color: rgb(85, 170, 255);
+            }
+        """)
+        self.layout_members.addWidget(self.table_users)
+
+        # 4.2 Khu vực nhập liệu (Form)
+        self.frame_input_user = QFrame()
+        self.frame_input_user.setStyleSheet("background-color: rgb(33, 37, 43); border-radius: 5px;")
+        self.layout_input_user = QGridLayout(self.frame_input_user)
+
+        # Các ô nhập liệu
+        self.txt_user_id = QLineEdit()
+        self.txt_user_id.setPlaceholderText("ID (Tự động)")
+        self.txt_user_id.setEnabled(False) # ID không cho sửa
+        self.txt_user_id.setStyleSheet("background-color: rgb(27, 29, 35); color: gray; padding: 5px;")
+
+        self.txt_username = QLineEdit()
+        self.txt_username.setPlaceholderText("Tên đăng nhập")
+        self.txt_username.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.txt_password = QLineEdit()
+        self.txt_password.setPlaceholderText("Mật khẩu")
+        self.txt_password.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.txt_balance = QLineEdit()
+        self.txt_balance.setPlaceholderText("Số dư tiền")
+        self.txt_balance.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.chk_vip = QCheckBox("Tài khoản VIP")
+        self.chk_vip.setStyleSheet("color: white;")
+
+        # Add vào Layout Grid
+        self.layout_input_user.addWidget(QLabel("ID:", styleSheet="color: white"), 0, 0)
+        self.layout_input_user.addWidget(self.txt_user_id, 0, 1)
+        
+        self.layout_input_user.addWidget(QLabel("User:", styleSheet="color: white"), 0, 2)
+        self.layout_input_user.addWidget(self.txt_username, 0, 3)
+
+        self.layout_input_user.addWidget(QLabel("Pass:", styleSheet="color: white"), 1, 0)
+        self.layout_input_user.addWidget(self.txt_password, 1, 1)
+
+        self.layout_input_user.addWidget(QLabel("Tiền:", styleSheet="color: white"), 1, 2)
+        self.layout_input_user.addWidget(self.txt_balance, 1, 3)
+        
+        self.layout_input_user.addWidget(self.chk_vip, 0, 4)
+
+        self.layout_members.addWidget(self.frame_input_user)
+
+        # 4.3 Các nút chức năng
+        self.frame_btn_user = QFrame()
+        self.layout_btn_user = QHBoxLayout(self.frame_btn_user)
+        
+        btn_style = """
+            QPushButton { background-color: rgb(52, 59, 72); color: white; padding: 10px; border-radius: 5px; }
+            QPushButton:hover { background-color: rgb(60, 69, 84); }
+        """
+        self.btn_add_user = QPushButton("Thêm Mới")
+        self.btn_add_user.setStyleSheet(btn_style)
+        
+        self.btn_edit_user = QPushButton("Cập Nhật")
+        self.btn_edit_user.setStyleSheet(btn_style)
+        
+        self.btn_delete_user = QPushButton("Xóa User")
+        self.btn_delete_user.setStyleSheet("QPushButton { background-color: rgb(200, 50, 50); color: white; padding: 10px; border-radius: 5px; }")
+        
+        self.btn_clear_input = QPushButton("Làm Mới Form")
+        self.btn_clear_input.setStyleSheet(btn_style)
+
+        self.layout_btn_user.addWidget(self.btn_add_user)
+        self.layout_btn_user.addWidget(self.btn_edit_user)
+        self.layout_btn_user.addWidget(self.btn_delete_user)
+        self.layout_btn_user.addWidget(self.btn_clear_input)
+
+        self.layout_members.addWidget(self.frame_btn_user)
+        
+        self.stackedWidget.addWidget(self.page_members)
+
+        # 5. Page Settings (Cài đặt)
         self.page_settings = QWidget()
         self.page_settings.setObjectName(u"page_settings")
-        self.verticalLayout_settings = QVBoxLayout(self.page_settings) # Đổi layout cho đẹp
+        self.verticalLayout_settings = QVBoxLayout(self.page_settings)
         
         self.groupBox = QGroupBox(self.page_settings)
         self.groupBox.setObjectName(u"groupBox")
