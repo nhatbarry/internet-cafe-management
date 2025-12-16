@@ -18,7 +18,7 @@ from PyQt5.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
     QHeaderView, QAbstractItemView, QLineEdit, QComboBox, QSpinBox,
     QDoubleSpinBox, QCheckBox, QRadioButton, QDateEdit, QTimeEdit,
     QDateTimeEdit, QTextEdit, QFormLayout, QSpacerItem)
-import ui.files_rc as files_rc
+import views.ui.files_rc as files_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):

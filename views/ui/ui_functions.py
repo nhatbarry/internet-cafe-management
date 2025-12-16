@@ -18,7 +18,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve, QSize
 from PyQt5.QtWidgets import QMainWindow, QSizeGrip, QPushButton, QGraphicsDropShadowEffect, QSizePolicy
 from PyQt5.QtGui import QColor, QFont
-from ui.ui_styles import Style
+from views.ui.ui_styles import Style
 
 ## ==> GLOBALS
 GLOBAL_STATE = 0
