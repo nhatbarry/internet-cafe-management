@@ -554,7 +554,7 @@ class Ui_MainWindow(object):
         self.table_machines = QTableWidget()
         self.table_machines.setObjectName(u"table_machines")
         self.table_machines.setColumnCount(5)
-        self.table_machines.setHorizontalHeaderLabels(["ID", "Tên Máy", "Địa chỉ IP", "Trạng thái", "Người dùng"])
+        self.table_machines.setHorizontalHeaderLabels(["ID", "Tên Máy", "Địa chỉ IP", "Giá máy", "Người dùng"])
         self.table_machines.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table_machines.setStyleSheet("""
             QTableWidget {

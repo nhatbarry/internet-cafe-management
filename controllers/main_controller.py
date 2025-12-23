@@ -20,6 +20,10 @@ class MainController(BaseController):
         
         self.computer_model = ComputerModel()
         
+        if socket_service:
+            socket_service.client_connected.connect(self._on_client_connected)
+            socket_service.client_disconnected.connect(self._on_client_disconnected)
+        
         self._init_connections()
         
         self._load_initial_data()
@@ -130,11 +134,37 @@ class MainController(BaseController):
         self.computer_controller.load_computers_to_table()
     
     def _on_client_connected(self, ip_address: str):
-        self.computer_model.set_status_by_ip(ip_address, True)
+        computer = self.computer_model.get_by_ip(ip_address)
+        if computer:
+            success = self.computer_model.set_status_by_ip(ip_address, True)
+            if success:
+                print(f"✓ Máy '{computer.get('computer_name')}' (ID: {computer.get('computer_id')}) - IP: {ip_address} đã kết nối và chuyển sang trạng thái ONLINE")
+                self.view.update_status(f"Máy {computer.get('computer_name')} ({ip_address}) đã kết nối")
+            else:
+                print(f"✗ Không thể cập nhật trạng thái cho IP: {ip_address}")
+                self.view.update_status(f"Lỗi cập nhật trạng thái máy {ip_address}")
+        else:
+            print(f"⚠ IP {ip_address} kết nối nhưng không có trong danh sách máy trạm")
+            self.view.update_status(f"Cảnh báo: IP {ip_address} không xác định đã kết nối")
+        
         self.refresh_machine_grid()
-        self.view.update_status(f"✅ Máy {ip_address} đã kết nối")
+        if self.ui.stackedWidget.currentWidget() == self.ui.page_machines:
+            self.computer_controller.load_computers_to_table()
     
     def _on_client_disconnected(self, ip_address: str):
-        self.computer_model.set_status_by_ip(ip_address, False)
+        computer = self.computer_model.get_by_ip(ip_address)
+        if computer:
+            success = self.computer_model.set_status_by_ip(ip_address, False)
+            if success:
+                print(f"Máy '{computer.get('computer_name')}' (ID: {computer.get('computer_id')}) - IP: {ip_address} đã ngắt kết nối và chuyển sang trạng thái OFFLINE")
+                self.view.update_status(f"Máy {computer.get('computer_name')} ({ip_address}) đã ngắt kết nối")
+            else:
+                print(f"Không thể cập nhật trạng thái cho IP: {ip_address}")
+                self.view.update_status(f"Lỗi cập nhật trạng thái máy {ip_address}")
+        else:
+            print(f"IP {ip_address} ngắt kết nối nhưng không có trong danh sách máy trạm")
+            self.view.update_status(f"IP {ip_address} đã ngắt kết nối")
+        
         self.refresh_machine_grid()
-        self.view.update_status(f"⚠️ Máy {ip_address} đã ngắt kết nối")
+        if self.ui.stackedWidget.currentWidget() == self.ui.page_machines:
+            self.computer_controller.load_computers_to_table()

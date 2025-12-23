@@ -24,12 +24,11 @@ class ComputerController(BaseController):
             self.ui.table_machines.setItem(row_idx, 1, QTableWidgetItem(str(comp.get("computer_name", ""))))
             self.ui.table_machines.setItem(row_idx, 2, QTableWidgetItem(str(comp.get("ip_address", ""))))
             
-            is_active = comp.get("is_active", False)
-            status_text = "Hoạt động" if is_active else "Tắt/Bảo trì"
-            self.ui.table_machines.setItem(row_idx, 3, QTableWidgetItem(status_text))
+
             
             user = comp.get("user") or "Trống"
             self.ui.table_machines.setItem(row_idx, 4, QTableWidgetItem(user))
+            self.ui.table_machines.setItem(row_idx, 3, QTableWidgetItem(str(comp.get("price", ""))))
     
     def add_computer(self):
         name = self.ui.txt_comp_name.text().strip()
@@ -112,7 +111,6 @@ class ComputerController(BaseController):
     
     
     def lock_computer(self):
-        """Khóa máy đang chọn"""
         row = self.ui.table_machines.currentRow()
         if row < 0:
             self.show_warning("Lỗi", "Vui lòng chọn máy cần khóa!")
@@ -128,7 +126,6 @@ class ComputerController(BaseController):
             self.show_warning("Lỗi", f"Máy {target_ip} chưa kết nối!")
     
     def unlock_computer(self):
-        """Mở khóa máy đang chọn"""
         row = self.ui.table_machines.currentRow()
         if row < 0:
             self.show_warning("Lỗi", "Vui lòng chọn máy cần mở khóa!")
@@ -144,7 +141,6 @@ class ComputerController(BaseController):
             self.show_warning("Lỗi", f"Máy {target_ip} chưa kết nối!")
     
     def shutdown_computer(self):
-        """Tắt máy đang chọn"""
         row = self.ui.table_machines.currentRow()
         if row < 0:
             self.show_warning("Lỗi", "Vui lòng chọn máy cần tắt!")

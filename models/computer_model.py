@@ -31,8 +31,7 @@ class ComputerModel:
             "computer_name": name,
             "ip_address": ip_address,
             "is_active": is_active,
-            "user": None,
-            "session_start": None
+            "price": 10000
         }
         self.collection.insert_one(new_computer)
         return new_id
