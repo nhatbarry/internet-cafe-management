@@ -57,12 +57,18 @@ class SocketService(QObject):
                     print(f"Lỗi accept: {e}")
     
     def _handle_client(self, client_socket: socket.socket, ip_address: str):
+        buffer = ""
         while self._running:
             try:
-                message = client_socket.recv(1024).decode('utf-8')
-                if message:
-                    print(f"Nhận từ {ip_address}: {message}")
-                    self.message_received.emit(ip_address, message)
+                data = client_socket.recv(1024).decode('utf-8')
+                if data:
+                    buffer += data
+                    while '\n' in buffer:
+                        message, buffer = buffer.split('\n', 1)
+                        message = message.strip()
+                        if message:
+                            print(f"Nhận từ {ip_address}: {message}")
+                            self.message_received.emit(ip_address, message)
                 else:
                     break
             except:
@@ -86,7 +92,7 @@ class SocketService(QObject):
             return False
         
         try:
-            self.clients[target_ip].send(command.encode('utf-8'))
+            self.clients[target_ip].send((command + '\n').encode('utf-8'))
             print(f"Đã gửi '{command}' tới {target_ip}")
             return True
         except Exception as e:

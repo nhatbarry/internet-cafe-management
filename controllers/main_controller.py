@@ -130,6 +130,8 @@ class MainController(BaseController):
             if child.widget():
                 child.widget().deleteLater()
         
+        from PyQt5.QtCore import Qt
+        
         machines = self.computer_model.get_all()
         
         row = 0
@@ -142,7 +144,7 @@ class MainController(BaseController):
             
             card = MachineCard(machine_copy)
             card.detail_clicked.connect(self._on_machine_detail_clicked)
-            self.ui.gridLayout_machines.addWidget(card, row, col)
+            self.ui.gridLayout_machines.addWidget(card, row, col, 1, 1, Qt.AlignTop | Qt.AlignLeft)
             
             col += 1
             if col >= MACHINES_PER_ROW:
@@ -225,7 +227,7 @@ class MainController(BaseController):
                     'read': False,
                     'timestamp': datetime.now().strftime('%H:%M:%S')
                 }
-                self.support_messages[ip_address].append(new_message)
+                self.support_messages[ip_address].insert(0, new_message)
                 
                 print(f"📩 Nhận yêu cầu hỗ trợ từ {computer.get('computer_name')} ({ip_address}): {support_text}")
                 self.view.update_status(f"Yêu cầu hỗ trợ từ {computer.get('computer_name')}")
@@ -234,7 +236,7 @@ class MainController(BaseController):
                 print(f"⚠ Nhận message từ IP không xác định: {ip_address}")
         
         elif message.startswith("LOGIN:"):
-            username = message.replace("LOGIN:", "", 1)
+            username = message.replace("LOGIN:", "", 1).strip()
             computer = self.computer_model.get_by_ip(ip_address)
             if computer:
                 self.computer_model.assign_user(computer.get('computer_id'), username)
@@ -274,7 +276,7 @@ class MainController(BaseController):
                         'timestamp': datetime.now().strftime('%H:%M:%S'),
                         'type': 'order'
                     }
-                    self.support_messages[ip_address].append(order_message)
+                    self.support_messages[ip_address].insert(0, order_message)
                     
                     print(f"🛒 {username} đặt hàng {service_name} (Giá: {price} VND) từ {computer.get('computer_name')} ({ip_address})")
                     self.view.update_status(f"Đơn hàng mới từ {computer.get('computer_name')}: {service_name}")

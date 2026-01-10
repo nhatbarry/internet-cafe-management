@@ -1,6 +1,7 @@
 
-from PyQt5.QtWidgets import QFrame, QVBoxLayout, QLabel, QPushButton
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtWidgets import QFrame, QVBoxLayout, QLabel, QPushButton, QSizePolicy, QScrollArea, QWidget
+from PyQt5.QtCore import pyqtSignal, Qt
+from PyQt5.QtGui import QScreen
 
 
 class MachineCard(QFrame):
@@ -13,7 +14,19 @@ class MachineCard(QFrame):
         self._setup_ui()
     
     def _setup_ui(self):
-        self.setMinimumSize(250, 200)
+        from PyQt5.QtWidgets import QApplication
+        screen = QApplication.primaryScreen()
+        screen_size = screen.size()
+        
+        if screen_size.width() >= 1920:
+            card_width = 320
+            card_height = 260
+        else:
+            card_width = 280
+            card_height = 220
+            
+        self.setFixedSize(card_width, card_height)
+        self.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         
         is_active = self.data.get('is_active', False)
         user = self.data.get('user')
@@ -72,24 +85,63 @@ class MachineCard(QFrame):
             lbl_user.setStyleSheet(
                 "font-size: 10px; color: #ccc; border: none; background: transparent;"
             )
+            lbl_user.setWordWrap(True)
             layout.addWidget(lbl_user)
         
         support_messages = self.data.get('support_messages', [])
         if support_messages:
+            scroll_area = QScrollArea()
+            scroll_area.setWidgetResizable(True)
+            scroll_area.setMaximumHeight(100)
+            scroll_area.setStyleSheet("""
+                QScrollArea {
+                    border: 1px solid rgb(60, 65, 75);
+                    background: transparent;
+                    border-radius: 5px;
+                }
+                QScrollBar:vertical {
+                    background: rgb(52, 59, 72);
+                    width: 8px;
+                    border-radius: 4px;
+                }
+                QScrollBar::handle:vertical {
+                    background: rgb(85, 170, 255);
+                    border-radius: 4px;
+                }
+            """)
+            
+            scroll_widget = QWidget()
+            scroll_layout = QVBoxLayout(scroll_widget)
+            scroll_layout.setSpacing(2)
+            scroll_layout.setContentsMargins(5, 5, 5, 5)
+            
             for msg in support_messages:
                 text = msg.get('text', '')
                 is_read = msg.get('read', False)
                 timestamp = msg.get('timestamp', '')
                 
+                is_order = 'order' in text.lower() or 'đã order' in text.lower()
+                
+                if is_order:
+                    msg_color = "#4CAF50"
+                    icon = "🛒"
+                else:
+                    msg_color = "#FFB74D"
+                    icon = "🔔"
+                
                 font_weight = "normal" if is_read else "bold"
-                msg_label = QLabel(f"🔔 [{timestamp}] {text}")
+                msg_label = QLabel(f"{icon} [{timestamp}] {text}")
                 msg_label.setStyleSheet(
-                    f"color: #FFD700; font-weight: {font_weight}; "
+                    f"color: {msg_color}; font-weight: {font_weight}; "
                     "font-size: 10px; border: none; background: transparent; "
                     "padding: 3px;"
                 )
                 msg_label.setWordWrap(True)
-                layout.addWidget(msg_label)
+                scroll_layout.addWidget(msg_label)
+            
+            scroll_layout.addStretch()
+            scroll_area.setWidget(scroll_widget)
+            layout.addWidget(scroll_area)
         
         layout.addStretch()
         
