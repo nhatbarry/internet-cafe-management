@@ -13,7 +13,7 @@ class MachineCard(QFrame):
         self._setup_ui()
     
     def _setup_ui(self):
-        self.setMinimumSize(250, 160)
+        self.setMinimumSize(250, 200)
         
         is_active = self.data.get('is_active', False)
         user = self.data.get('user')
@@ -43,11 +43,12 @@ class MachineCard(QFrame):
         """)
         
         layout = QVBoxLayout(self)
+        layout.setSpacing(3)
         
         machine_name = self.data.get('computer_name', 'Unknown PC')
         lbl_name = QLabel(f"🖥️ {machine_name}")
         lbl_name.setStyleSheet(
-            "font-size: 18px; font-weight: bold; color: white; "
+            "font-size: 16px; font-weight: bold; color: white; "
             "border: none; background: transparent;"
         )
         layout.addWidget(lbl_name)
@@ -55,23 +56,42 @@ class MachineCard(QFrame):
         ip_addr = self.data.get('ip_address', '0.0.0.0')
         lbl_ip = QLabel(f"IP: {ip_addr}")
         lbl_ip.setStyleSheet(
-            "font-size: 11px; color: #aaa; border: none; background: transparent;"
+            "font-size: 10px; color: #aaa; border: none; background: transparent;"
         )
         layout.addWidget(lbl_ip)
         
         lbl_status = QLabel(f"Status: {status_text}")
         lbl_status.setStyleSheet(
-            f"color: {status_color}; font-weight: bold; "
+            f"font-size: 11px; color: {status_color}; font-weight: bold; "
             "border: none; background: transparent;"
         )
         layout.addWidget(lbl_status)
         
         if user:
             lbl_user = QLabel(f"User: {user}")
-            lbl_user.setStyleSheet("color: #ccc; border: none; background: transparent;")
+            lbl_user.setStyleSheet(
+                "font-size: 10px; color: #ccc; border: none; background: transparent;"
+            )
             layout.addWidget(lbl_user)
-        else:
-            layout.addStretch()
+        
+        support_messages = self.data.get('support_messages', [])
+        if support_messages:
+            for msg in support_messages:
+                text = msg.get('text', '')
+                is_read = msg.get('read', False)
+                timestamp = msg.get('timestamp', '')
+                
+                font_weight = "normal" if is_read else "bold"
+                msg_label = QLabel(f"🔔 [{timestamp}] {text}")
+                msg_label.setStyleSheet(
+                    f"color: #FFD700; font-weight: {font_weight}; "
+                    "font-size: 10px; border: none; background: transparent; "
+                    "padding: 3px;"
+                )
+                msg_label.setWordWrap(True)
+                layout.addWidget(msg_label)
+        
+        layout.addStretch()
         
         btn_detail = QPushButton("Chi tiết")
         btn_detail.setStyleSheet("""
@@ -81,6 +101,7 @@ class MachineCard(QFrame):
                 border-radius: 5px;
                 padding: 5px;
                 border: none;
+                font-size: 11px;
             }
             QPushButton:hover { background-color: rgb(100, 190, 255); }
         """)

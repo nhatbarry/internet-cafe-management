@@ -4,6 +4,7 @@ DATABASE_NAME = "internet_cafe"
 
 COLLECTION_COMPUTERS = "computers"
 COLLECTION_USERS = "users"
+COLLECTION_SERVICES = "services"
 
 SOCKET_PORT = 65432
 SOCKET_HOST = "localhost"

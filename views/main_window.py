@@ -48,7 +48,6 @@ class MainWindow(QMainWindow):
     def resizeEvent(self, event):
         return super().resizeEvent(event)
     
-    
     def show_message(self, title: str, message: str, msg_type: str = "info"):
         from PyQt5.QtWidgets import QMessageBox
         

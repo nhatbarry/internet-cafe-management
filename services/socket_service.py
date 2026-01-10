@@ -6,9 +6,8 @@ from config.settings import SOCKET_PORT, SOCKET_HOST
 
 
 class SocketService(QObject):
-    
-    client_connected = pyqtSignal(str)   
-    client_disconnected = pyqtSignal(str)  
+    client_connected = pyqtSignal(str)
+    client_disconnected = pyqtSignal(str)
     message_received = pyqtSignal(str, str) 
     
     def __init__(self, host: str = SOCKET_HOST, port: int = SOCKET_PORT):
@@ -55,7 +54,7 @@ class SocketService(QObject):
                 
             except Exception as e:
                 if self._running:
-                    print(f" Lỗi accept: {e}")
+                    print(f"Lỗi accept: {e}")
     
     def _handle_client(self, client_socket: socket.socket, ip_address: str):
         while self._running:

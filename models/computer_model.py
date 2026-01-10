@@ -22,7 +22,7 @@ class ComputerModel:
     def get_active_computers(self) -> List[Dict[str, Any]]:
         return list(self.collection.find({"is_active": True}).sort("computer_id", 1))
     
-    def create(self, name: str, ip_address: str, is_active: bool = False) -> int:
+    def create(self, name: str, ip_address: str, price: int = 5000) -> int:
         last_comp = self.collection.find_one(sort=[("computer_id", -1)])
         new_id = 1 if not last_comp else last_comp["computer_id"] + 1
         
@@ -30,8 +30,8 @@ class ComputerModel:
             "computer_id": new_id,
             "computer_name": name,
             "ip_address": ip_address,
-            "is_active": is_active,
-            "price": 10000
+            "is_active": False,
+            "price": price
         }
         self.collection.insert_one(new_computer)
         return new_id

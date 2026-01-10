@@ -24,8 +24,6 @@ class ComputerController(BaseController):
             self.ui.table_machines.setItem(row_idx, 1, QTableWidgetItem(str(comp.get("computer_name", ""))))
             self.ui.table_machines.setItem(row_idx, 2, QTableWidgetItem(str(comp.get("ip_address", ""))))
             
-
-            
             user = comp.get("user") or "Trống"
             self.ui.table_machines.setItem(row_idx, 4, QTableWidgetItem(user))
             self.ui.table_machines.setItem(row_idx, 3, QTableWidgetItem(str(comp.get("price", ""))))
@@ -33,17 +31,23 @@ class ComputerController(BaseController):
     def add_computer(self):
         name = self.ui.txt_comp_name.text().strip()
         ip = self.ui.txt_comp_ip.text().strip()
-        is_active = self.ui.chk_comp_active.isChecked()
+        price_text = self.ui.txt_comp_price.text().strip()
         
         if not name or not ip:
             self.show_warning("Lỗi", "Vui lòng nhập Tên máy và IP!")
+            return
+        
+        try:
+            price = int(price_text) if price_text else 5000
+        except ValueError:
+            self.show_warning("Lỗi", "Giá máy phải là số!")
             return
         
         if self.model.get_by_ip(ip):
             self.show_warning("Lỗi", f"IP '{ip}' đã tồn tại!")
             return
         
-        self.model.create(name, ip, is_active)
+        self.model.create(name, ip, price)
         self.load_computers_to_table()
         self.clear_form()
         self.show_info("Thành công", "Đã thêm máy trạm mới!")
@@ -57,10 +61,17 @@ class ComputerController(BaseController):
             self.show_warning("Lỗi", "Vui lòng chọn máy cần sửa!")
             return
         
+        price_text = self.ui.txt_comp_price.text().strip()
+        try:
+            price = int(price_text) if price_text else 5000
+        except ValueError:
+            self.show_warning("Lỗi", "Giá máy phải là số!")
+            return
+        
         data = {
             "computer_name": self.ui.txt_comp_name.text().strip(),
             "ip_address": self.ui.txt_comp_ip.text().strip(),
-            "is_active": self.ui.chk_comp_active.isChecked()
+            "price": price
         }
         
         if self.model.update(int(comp_id), data):
@@ -99,15 +110,13 @@ class ComputerController(BaseController):
         self.ui.txt_comp_id.setText(self.ui.table_machines.item(row, 0).text())
         self.ui.txt_comp_name.setText(self.ui.table_machines.item(row, 1).text())
         self.ui.txt_comp_ip.setText(self.ui.table_machines.item(row, 2).text())
-        self.ui.chk_comp_active.setChecked(
-            self.ui.table_machines.item(row, 3).text() == "Hoạt động"
-        )
+        self.ui.txt_comp_price.setText(self.ui.table_machines.item(row, 3).text())
     
     def clear_form(self):
         self.ui.txt_comp_id.clear()
         self.ui.txt_comp_name.clear()
         self.ui.txt_comp_ip.clear()
-        self.ui.chk_comp_active.setChecked(True)
+        self.ui.txt_comp_price.setText("5000")
     
     
     def lock_computer(self):

@@ -594,9 +594,10 @@ class Ui_MainWindow(object):
         self.txt_comp_ip.setPlaceholderText("Địa chỉ IP (VD: 192.168.1.10)")
         self.txt_comp_ip.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
 
-        self.chk_comp_active = QCheckBox("Đang hoạt động (Active)")
-        self.chk_comp_active.setStyleSheet("color: white;")
-        self.chk_comp_active.setChecked(True) # Mặc định là active
+        self.txt_comp_price = QLineEdit()
+        self.txt_comp_price.setPlaceholderText("Giá máy (VD: 5000)")
+        self.txt_comp_price.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+        self.txt_comp_price.setText("5000")  # Mặc định 5000 VND/h
 
         # Add vào Layout Grid
         self.layout_input_machine.addWidget(QLabel("ID:", styleSheet="color: white"), 0, 0)
@@ -608,7 +609,8 @@ class Ui_MainWindow(object):
         self.layout_input_machine.addWidget(QLabel("IP:", styleSheet="color: white"), 1, 0)
         self.layout_input_machine.addWidget(self.txt_comp_ip, 1, 1)
 
-        self.layout_input_machine.addWidget(self.chk_comp_active, 1, 3)
+        self.layout_input_machine.addWidget(QLabel("Giá máy (VND/h):", styleSheet="color: white"), 1, 2)
+        self.layout_input_machine.addWidget(self.txt_comp_price, 1, 3)
 
         self.layout_machines.addWidget(self.frame_input_machine)
 
@@ -644,11 +646,126 @@ class Ui_MainWindow(object):
         # 3. Page Services (Dịch vụ)
         self.page_services = QWidget()
         self.page_services.setObjectName(u"page_services")
-        layout_s = QVBoxLayout(self.page_services)
-        label_s = QLabel("MÀN HÌNH DỊCH VỤ (F&B)", self.page_services)
-        label_s.setAlignment(Qt.AlignCenter)
-        label_s.setStyleSheet("color: white; font-size: 24pt;")
-        layout_s.addWidget(label_s)
+        self.layout_services = QVBoxLayout(self.page_services)
+
+        # 3.1 Bảng danh sách Dịch vụ
+        self.table_services = QTableWidget()
+        self.table_services.setObjectName(u"table_services")
+        self.table_services.setColumnCount(5)
+        self.table_services.setHorizontalHeaderLabels(["ID", "Dịch vụ", "Mô tả", "Giá bán", "Ảnh"])
+        self.table_services.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table_services.setStyleSheet("""
+            QTableWidget {
+                background-color: rgb(39, 44, 54);
+                color: white;
+                gridline-color: rgb(44, 49, 60);
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: rgb(33, 37, 43);
+                color: white;
+                border: 1px solid rgb(44, 49, 60);
+                padding: 5px;
+            }
+            QTableWidget::item:selected {
+                background-color: rgb(85, 170, 255);
+            }
+        """)
+        self.layout_services.addWidget(self.table_services)
+
+        # 3.2 Khu vực nhập liệu
+        self.frame_input_service = QFrame()
+        self.frame_input_service.setStyleSheet("background-color: rgb(33, 37, 43); border-radius: 5px;")
+        self.layout_input_service = QHBoxLayout(self.frame_input_service)
+
+        # Left side - Form inputs
+        self.frame_service_form = QFrame()
+        self.layout_service_form = QGridLayout(self.frame_service_form)
+
+        # Các ô nhập liệu
+        self.txt_service_id = QLineEdit()
+        self.txt_service_id.setPlaceholderText("ID (Tự động)")
+        self.txt_service_id.setEnabled(False)
+        self.txt_service_id.setStyleSheet("background-color: rgb(27, 29, 35); color: gray; padding: 5px;")
+
+        self.txt_service_name = QLineEdit()
+        self.txt_service_name.setPlaceholderText("Tên dịch vụ (VD: Coca Cola)")
+        self.txt_service_name.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.txt_service_desc = QTextEdit()
+        self.txt_service_desc.setPlaceholderText("Mô tả dịch vụ...")
+        self.txt_service_desc.setMaximumHeight(80)
+        self.txt_service_desc.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        self.txt_service_price = QLineEdit()
+        self.txt_service_price.setPlaceholderText("Giá bán (VND)")
+        self.txt_service_price.setStyleSheet("background-color: rgb(27, 29, 35); color: white; padding: 5px;")
+
+        # Add vào Layout Grid
+        self.layout_service_form.addWidget(QLabel("ID:", styleSheet="color: white"), 0, 0)
+        self.layout_service_form.addWidget(self.txt_service_id, 0, 1)
+        
+        self.layout_service_form.addWidget(QLabel("Tên dịch vụ:", styleSheet="color: white"), 1, 0)
+        self.layout_service_form.addWidget(self.txt_service_name, 1, 1)
+
+        self.layout_service_form.addWidget(QLabel("Giá bán:", styleSheet="color: white"), 2, 0)
+        self.layout_service_form.addWidget(self.txt_service_price, 2, 1)
+
+        self.layout_service_form.addWidget(QLabel("Mô tả:", styleSheet="color: white"), 3, 0)
+        self.layout_service_form.addWidget(self.txt_service_desc, 3, 1)
+
+        self.layout_input_service.addWidget(self.frame_service_form, 2)
+
+        # Right side - Image preview
+        self.frame_service_image = QFrame()
+        self.frame_service_image.setStyleSheet("background-color: rgb(27, 29, 35); border-radius: 5px;")
+        self.layout_service_image = QVBoxLayout(self.frame_service_image)
+        
+        self.lbl_service_image = QLabel("Chưa có ảnh")
+        self.lbl_service_image.setAlignment(Qt.AlignCenter)
+        self.lbl_service_image.setMinimumSize(QSize(200, 200))
+        self.lbl_service_image.setMaximumSize(QSize(300, 300))
+        self.lbl_service_image.setStyleSheet("color: gray; background-color: rgb(39, 44, 54); border: 2px dashed gray;")
+        self.layout_service_image.addWidget(self.lbl_service_image)
+
+        self.btn_browse_image = QPushButton("Chọn ảnh")
+        self.btn_browse_image.setStyleSheet("""
+            QPushButton { background-color: rgb(52, 59, 72); color: white; padding: 8px; border-radius: 5px; }
+            QPushButton:hover { background-color: rgb(60, 69, 84); }
+        """)
+        self.layout_service_image.addWidget(self.btn_browse_image)
+
+        self.layout_input_service.addWidget(self.frame_service_image, 1)
+
+        self.layout_services.addWidget(self.frame_input_service)
+
+        # 3.3 Các nút chức năng
+        self.frame_btn_service = QFrame()
+        self.layout_btn_service = QHBoxLayout(self.frame_btn_service)
+        
+        btn_style = """
+            QPushButton { background-color: rgb(52, 59, 72); color: white; padding: 10px; border-radius: 5px; }
+            QPushButton:hover { background-color: rgb(60, 69, 84); }
+        """
+        self.btn_add_service = QPushButton("Thêm Dịch vụ")
+        self.btn_add_service.setStyleSheet(btn_style)
+        
+        self.btn_edit_service = QPushButton("Cập Nhật")
+        self.btn_edit_service.setStyleSheet(btn_style)
+        
+        self.btn_delete_service = QPushButton("Xóa Dịch vụ")
+        self.btn_delete_service.setStyleSheet("QPushButton { background-color: rgb(200, 50, 50); color: white; padding: 10px; border-radius: 5px; }")
+        
+        self.btn_clear_service = QPushButton("Làm Mới Form")
+        self.btn_clear_service.setStyleSheet(btn_style)
+
+        self.layout_btn_service.addWidget(self.btn_add_service)
+        self.layout_btn_service.addWidget(self.btn_edit_service)
+        self.layout_btn_service.addWidget(self.btn_delete_service)
+        self.layout_btn_service.addWidget(self.btn_clear_service)
+
+        self.layout_services.addWidget(self.frame_btn_service)
+        
         self.stackedWidget.addWidget(self.page_services)
 
         # 4. Page Members (Hội viên)
