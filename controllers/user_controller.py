@@ -19,7 +19,8 @@ class UserController(BaseController):
             self.ui.table_users.setItem(row_idx, 0, QTableWidgetItem(str(user.get("user_id", ""))))
             self.ui.table_users.setItem(row_idx, 1, QTableWidgetItem(str(user.get("username", ""))))
             self.ui.table_users.setItem(row_idx, 2, QTableWidgetItem(str(user.get("password", ""))))
-            self.ui.table_users.setItem(row_idx, 3, QTableWidgetItem(str(user.get("balance", 0))))
+            balance = user.get("balance", 0)
+            self.ui.table_users.setItem(row_idx, 3, QTableWidgetItem(f"{balance:,.0f}"))
             vip_status = "Có" if user.get("is_vip") else "Không"
             self.ui.table_users.setItem(row_idx, 4, QTableWidgetItem(vip_status))
     

@@ -144,6 +144,7 @@ class MainController(BaseController):
             
             card = MachineCard(machine_copy)
             card.detail_clicked.connect(self._on_machine_detail_clicked)
+            card.logout_clicked.connect(self._on_machine_logout_clicked)
             self.ui.gridLayout_machines.addWidget(card, row, col, 1, 1, Qt.AlignTop | Qt.AlignLeft)
             
             col += 1
@@ -167,6 +168,38 @@ class MainController(BaseController):
         self.ui.txt_comp_price.setText(str(machine_data.get("price", 5000)))
         
         self.computer_controller.load_computers_to_table()
+    
+    def _on_machine_logout_clicked(self, machine_data: dict):
+        """Xử lý force logout user khỏi máy"""
+        computer_id = machine_data.get("computer_id")
+        username = machine_data.get("user")
+        ip_address = machine_data.get("ip_address")
+        computer_name = machine_data.get("computer_name")
+        
+        if not username:
+            return
+        
+        from PyQt5.QtWidgets import QMessageBox
+        reply = QMessageBox.question(
+            self.view,
+            "Xác nhận đăng xuất",
+            f"Bạn có chắc muốn đăng xuất user '{username}' khỏi máy '{computer_name}'?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No
+        )
+        
+        if reply == QMessageBox.Yes:
+            if self.socket and ip_address:
+                self.socket.send_command(ip_address, "FORCE_LOGOUT")
+                print(f"🚪 Gửi lệnh FORCE_LOGOUT đến {ip_address} (User: {username})")
+            
+            self.computer_model.release_user(computer_id)
+            print(f"🚪 Đã đăng xuất user {username} khỏi {computer_name}")
+            self.view.update_status(f"Đã đăng xuất {username} khỏi {computer_name}")
+            
+            self.refresh_machine_grid()
+            if self.ui.stackedWidget.currentWidget() == self.ui.page_machines:
+                self.computer_controller.load_computers_to_table()
     
     def _on_client_connected(self, ip_address: str):
         computer = self.computer_model.get_by_ip(ip_address)

@@ -7,6 +7,7 @@ from PyQt5.QtGui import QScreen
 class MachineCard(QFrame):
     
     detail_clicked = pyqtSignal(dict)
+    logout_clicked = pyqtSignal(dict)
     
     def __init__(self, machine_data: dict, parent=None):
         super().__init__(parent)
@@ -144,6 +145,22 @@ class MachineCard(QFrame):
             layout.addWidget(scroll_area)
         
         layout.addStretch()
+        
+        if user:
+            btn_logout = QPushButton("Đăng xuất User")
+            btn_logout.setStyleSheet("""
+                QPushButton {
+                    background-color: rgb(231, 76, 60);
+                    color: white;
+                    border-radius: 5px;
+                    padding: 5px;
+                    border: none;
+                    font-size: 11px;
+                }
+                QPushButton:hover { background-color: rgb(192, 57, 43); }
+            """)
+            btn_logout.clicked.connect(lambda: self.logout_clicked.emit(self.data))
+            layout.addWidget(btn_logout)
         
         btn_detail = QPushButton("Chi tiết")
         btn_detail.setStyleSheet("""
